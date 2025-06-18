@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: run-unit-tests
         name: Run MinUnit tests
-        entry: sh -c "cd Player_STM32_DISCOVERY/space_collector/test/ && gcc -I../include -o test_math_ops math_ops.c test_math_ops.c && ./test_math_ops"
+        entry: sh -c "cd test && gcc -I. -o test_player_now_POUET test_player.c player_action.c && sleep 0.2 && ./test_player_now_POUET"
         language: system
         stages: [pre-commit]
