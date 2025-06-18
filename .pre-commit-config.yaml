@@ -6,3 +6,16 @@ repos:
         entry: sh -c "cd test && gcc -I. -o test_player_now_POUET test_player.c player_action.c && sleep 0.2 && ./test_player_now_POUET"
         language: system
         stages: [pre-commit]
+      - id: cppcheck
+        name: Run cppcheck static analysis
+        entry: cppcheck
+        args: [--enable=all, --inconclusive, --std=c++11]
+        language: system
+        types: [c]
+        stages: [pre-commit]
+      - id: run-coverage
+        name: Run Coverage with GCC
+        entry: sh -c 'gcc -Iinclude -fprofile-arcs -ftest-coverage -o test_coverage test/test_player.c test/player_action.c && ./test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --html --html-details -o cov_html/index.html && xdg-open cov_html/index.html'
+        language: system
+        files: ^test/.*\.c$
+        stages: [pre-commit]
