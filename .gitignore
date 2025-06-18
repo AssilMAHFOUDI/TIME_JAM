@@ -5,6 +5,16 @@
 .vscode/ipch
 test_math_ops
 
+
+
+# Run TESTS
+cov_html/
+cppcheck_report/
+.gcna
+.gcno
+test_coverage
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
