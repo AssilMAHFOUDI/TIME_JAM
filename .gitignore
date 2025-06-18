@@ -10,8 +10,8 @@ test_math_ops
 # Run TESTS
 cov_html/
 cppcheck_report/
-.gcna
-.gcno
+*.gcda
+*.gcno
 test_coverage
 
 
