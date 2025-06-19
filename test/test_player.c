@@ -78,7 +78,7 @@ MU_TEST(test_fire_valid) {
     char buffer[50];
     int code = fire(buffer, 3, 270);
     mu_assert(code == 0, "Expected success code 0");
-    mu_assert_string_eq("FIRE 3 270", buffer);
+    mu_assert_string_eq("FIRE 3 270\n", buffer);
 }
  
 MU_TEST(test_fire_invalid_id_not_attacker) {
@@ -97,7 +97,7 @@ MU_TEST(test_radar_valid) {
     char buffer[50];
     int code = radar(buffer, 6);
     mu_assert(code == 0, "Expected success code 0");
-    mu_assert_string_eq("RADAR 6", buffer);
+    mu_assert_string_eq("RADAR 6\n", buffer);
 }
  
 MU_TEST(test_radar_invalid_id) {

@@ -31,11 +31,15 @@ int main(void)
 }
 
 void StartDefaultTask(void *argument)
+
 {
+    char buffer[500];
+    gets(buffer);
     while (1)
     {
-        char* buffer[50];
-        char* radar_buffer[1500];
+        // char* buffer[50];
+        // char buffer[500];
+        // gets(buffer);
         move(buffer, 8, 70, 1000);
         puts(buffer);
         gets(buffer);
@@ -43,16 +47,22 @@ void StartDefaultTask(void *argument)
         // osDelay(100);
         move(buffer, 3, 80, 1000);
         puts(buffer);
+        
         gets(buffer);
 
-
-        // fire(buffer, 3, 90);
-        // radar(buffer, 7);
-        // puts("RADAR 7");
-        // gets(radar_buffer);
 
         fire(buffer, 3, 90);
         puts(buffer);
         gets(buffer);
+
+        
+        radar(buffer, 7);
+        puts(buffer);
+        // puts("RADAR 7\n");
+        gets(buffer);
+
+        // fire(buffer, 3, 90);
+        // puts(buffer);
+        // gets(buffer);
     }
 }
