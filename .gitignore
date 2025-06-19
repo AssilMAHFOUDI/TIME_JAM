@@ -13,7 +13,7 @@ cppcheck_report/
 *.gcda
 *.gcno
 test_coverage
-
+test/test_player_now
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
