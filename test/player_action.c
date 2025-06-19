@@ -1,5 +1,7 @@
 #include "player_action.h"
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
  
 int move(char *buffer, int number_ship, int angle, int speed) {
     if (number_ship < 1 || number_ship > 9)
@@ -30,4 +32,58 @@ int radar(char *buffer, int ship_id) {
     sprintf(buffer, "RADAR %d", ship_id);
     return 0;
 }
- 
+
+void parse_radar_response(const char *input, RadarInfo *info) {
+    info->planet_count = 0;
+    info->ship_count = 0;
+    info->base.x = 0;
+    info->base.y = 0;
+
+    char buffer[256];
+    strncpy(buffer, input, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
+
+    char *token = strtok(buffer, ",");
+
+    while (token != NULL) {
+        if (token[0] == 'P') {
+            Planet *planet = &info->planets[info->planet_count];
+            int ret = sscanf(token, "P %d %d %d %d %d",
+                             &planet->planet_id,
+                             &planet->x,
+                             &planet->y,
+                             &planet->collected_by,
+                             &planet->at_base);
+            if (ret == 5)
+                info->planet_count++;
+        } else if (token[0] == 'S') {
+            Ship *ship = &info->ships[info->ship_count];
+            int ret = sscanf(token, "S %d %d %d %d %d",
+                             &ship->team,
+                             &ship->ship_id,
+                             &ship->x,
+                             &ship->y,
+                             &ship->broken);
+            if (ret == 5)
+                info->ship_count++;
+        } else if (token[0] == 'B') {
+            int x, y;
+            int ret = sscanf(token, "B %d %d", &x, &y);
+            if (ret == 2) {
+                info->base.x = x;
+                info->base.y = y;
+            }
+        }
+        token = strtok(NULL, ",");
+    }
+}
+
+//  Fonction pour calculer l’angle
+int calculate_angle(int x1, int y1, int x2, int y2) {
+    double angle_rad = atan2(y2 - y1, x2 - x1);
+    int angle_deg = (int)(angle_rad * 180 / M_PI);
+    if (angle_deg < 0)
+        angle_deg += 360;
+    return angle_deg;
+
+}

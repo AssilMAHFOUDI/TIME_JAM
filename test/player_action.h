@@ -1,5 +1,44 @@
 #ifndef PLAYER_ACTION_H
 #define PLAYER_ACTION_H
+
+
+
+#define MAX_PLANETS 10
+#define MAX_SHIPS 10
+
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+typedef struct {
+    int planet_id;
+    int x;
+    int y;
+    int collected_by;
+    int at_base;
+} Planet;
+
+typedef struct {
+    int team;
+    int ship_id;
+    int x;
+    int y;
+    int broken;
+} Ship;
+
+typedef struct {
+    int planet_count;
+    int ship_count;
+    Point base;
+    Planet planets[MAX_PLANETS];
+    Ship ships[MAX_SHIPS];
+} RadarInfo;
+
+
+void parse_radar_response(const char *input, RadarInfo *info);
+int calculate_angle(int x1, int y1, int x2, int y2); 
+
  
 /**
  * Génère une commande MOVE.
