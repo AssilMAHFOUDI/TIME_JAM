@@ -15,7 +15,7 @@ repos:
         stages: [pre-commit]
       - id: run-coverage
         name: Run Coverage with GCC
-        entry: sh -c 'gcc -Iinclude -fprofile-arcs -ftest-coverage -o test_coverage test/test_player.c test/player_action.c && ./test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --html --html-details -o cov_html/index.html && python -m webbrowser -t "cov_html/index.html"'
+        entry: sh -c 'gcc -Iinclude -fprofile-arcs -ftest-coverage -o test_coverage test/*.c && ./test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --exclude test/minunit.h --html --html-details -o cov_html/index.html && python -m webbrowser -t "cov_html/index.html"'
         language: system
         files: ^test/.*\.c$
         stages: [pre-commit]
