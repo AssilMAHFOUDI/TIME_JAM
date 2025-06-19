@@ -53,7 +53,7 @@ MU_TEST(test_move_valid) {
     char buffer[50];
     int code = move(buffer, 1, 2, 1000);
     mu_assert(code == 0, "Expected success code 0");
-    mu_assert_string_eq("MOVE 1 2 1000", buffer);
+    mu_assert_string_eq("MOVE 1 2 1000\n", buffer);
 }
  
 MU_TEST(test_move_invalid_id) {

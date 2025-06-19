@@ -11,7 +11,7 @@ int move(char *buffer, int number_ship, int angle, int speed) {
     if (speed < 0 || speed > 3000)
         return 3; // erreur vitesse invalide
  
-    sprintf(buffer, "MOVE %d %d %d", number_ship, angle, speed);
+    sprintf(buffer, "MOVE %d %d %d\n", number_ship, angle, speed);
     return 0;
 }
  

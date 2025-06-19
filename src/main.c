@@ -4,6 +4,7 @@
 #endif
 #include "main.h"
 #include "cmsis_os.h"
+#include "player_action.h"
 
 osThreadId_t defaultTaskHandle;
 
@@ -18,7 +19,7 @@ int main(void)
     const osThreadAttr_t defaultTask_attributes = {
         .name = "defaultTask",
         .priority = (osPriority_t)osPriorityNormal,
-        .stack_size = 128,
+        .stack_size = 2500,
     };
     defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
@@ -33,7 +34,25 @@ void StartDefaultTask(void *argument)
 {
     while (1)
     {
-        puts("MOVE 1 0 1000\n");
-        osDelay(1000);
+        char* buffer[50];
+        char* radar_buffer[1500];
+        move(buffer, 8, 70, 1000);
+        puts(buffer);
+        gets(buffer);
+        
+        // osDelay(100);
+        move(buffer, 3, 80, 1000);
+        puts(buffer);
+        gets(buffer);
+
+
+        // fire(buffer, 3, 90);
+        // radar(buffer, 7);
+        // puts("RADAR 7");
+        // gets(radar_buffer);
+
+        fire(buffer, 3, 90);
+        puts(buffer);
+        gets(buffer);
     }
 }
