@@ -15,12 +15,50 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install pre-commit and gcovr
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc cppcheck gcovr
           pip install pre-commit
 
+      - name: Show directory structure (debug)
+        run: ls -R
+
       - name: Run pre-commit hooks
-        run: |
-          pre-commit run --all-files
+        run: pre-commit run --all-files
+
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: cov_html
+
+
+
+# name: Pre-commit CI
+
+# on: [push, pull_request]
+
+# jobs:
+#   pre-commit:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.11'
+
+#       - name: Install pre-commit and gcovr
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y gcc cppcheck gcovr
+#           pip install pre-commit
+
+#       - name: Run pre-commit hooks
+#         run: |
+#           pre-commit run --all-files
