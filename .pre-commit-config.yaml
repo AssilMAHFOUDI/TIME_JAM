@@ -3,11 +3,10 @@ repos:
     hooks:
       - id: run-unit-tests
         name: Run MinUnit tests
-        # entry: sh -c "cd test && gcc -I. -o test_player_now test_player.c player_action.c && sleep 0.2 && ./test_player_now"
-        entry: sh -c "gcc -I . -Iinclude -lm -o test_player_now ./test/test_player.c ./src/player_action.c -lm && sleep 0.2 && ./test_player_now"
-
+        entry: sh -c 'gcc -I. -Iinclude -lm ./test/test_player.c ./src/player_action.c -o /tmp/test_player_now -lm && /tmp/test_player_now'
         language: system
         stages: [pre-commit]
+
       - id: cppcheck
         name: Run cppcheck static analysis
         entry: cppcheck
@@ -15,10 +14,10 @@ repos:
         language: system
         types: [c]
         stages: [pre-commit]
+
       - id: run-coverage
         name: Run Coverage with GCC
-        entry: sh -c 'gcc -Iinclude -lm -fprofile-arcs -ftest-coverage -o test_coverage ./test/*.c ./src/player_action.c -lm && ./test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --exclude test/minunit.h --html --html-details -o cov_html/index.html && cd cov_html'
-        # python -m webbrowser -t "index.html"
+        entry: sh -c 'gcc -Iinclude -lm -fprofile-arcs -ftest-coverage -o /tmp/test_coverage ./test/*.c ./src/player_action.c -lm && /tmp/test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --exclude test/minunit.h --html --html-details -o cov_html/index.html'
         language: system
         files: ^test/.*\.c$
         stages: [pre-commit]
