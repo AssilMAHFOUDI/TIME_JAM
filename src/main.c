@@ -33,22 +33,22 @@ int main(void)
 void StartDefaultTask(void *argument)
 
 {
-    char buffer[500];
+    char buffer[1000];
     gets(buffer);
     while (1)
     {
-        // char* buffer[50];
-        // char buffer[500];
+              // // char* buffer[50];
+        // // char buffer[500];
+        // // gets(buffer);
+        // move(buffer, 8, 70, 1000);
+        // puts(buffer);
         // gets(buffer);
-        move(buffer, 8, 70, 1000);
-        puts(buffer);
-        gets(buffer);
         
-        // osDelay(100);
-        move(buffer, 3, 80, 1000);
-        puts(buffer);
+        // // osDelay(100);
+        // move(buffer, 3, 80, 1000);
+        // puts(buffer);
         
-        gets(buffer);
+        // gets(buffer);
 
 
         fire(buffer, 3, 90);
@@ -58,11 +58,29 @@ void StartDefaultTask(void *argument)
         
         radar(buffer, 7);
         puts(buffer);
-        // puts("RADAR 7\n");
+        // // puts("RADAR 7\n");
         gets(buffer);
 
-        // fire(buffer, 3, 90);
-        // puts(buffer);
-        // gets(buffer);
+        // // fire(buffer, 3, 90);
+        // // puts(buffer);
+        // // gets(buffer);
+        
+        RadarInfo radar;
+        parse_radar_response(buffer, &radar);
+
+        Ship ship = radar.ships[0];
+        Planet planet = radar.planets[0];
+
+        int dx = planet.x - ship.x;
+        int dy = planet.y - ship.y;
+
+        double angle_rad = atan2(dy, dx);
+        int angle_deg = (int)(angle_rad * 180.0 / M_PI);
+        if (angle_deg < 0) angle_deg += 360;
+
+        move(buffer, ship.ship_id, angle_deg, 1000);
+        puts(buffer);
+        gets(buffer);
+ 
     }
 }
