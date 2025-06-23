@@ -2,6 +2,9 @@
 #include "player_action.h"
 #include <string.h>
 #include <math.h>
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
 
 MU_TEST(test_parse_radar_response_simple) {
     const char *input = "P 101 1000 2000 -1 0,S 0 3 1020 2020 0,B 500 500,S 0 2 100 2050 0";

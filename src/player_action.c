@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
  
 int move(char *buffer, int number_ship, int angle, int speed) {
     if (number_ship < 1 || number_ship > 9)
