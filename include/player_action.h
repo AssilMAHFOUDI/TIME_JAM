@@ -2,9 +2,11 @@
 #define PLAYER_ACTION_H
 
 
-
-#define MAX_PLANETS 10
-#define MAX_SHIPS 10
+// #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_PLANETS 100
+#define MAX_SHIPS 100
 
 typedef struct {
     int x;
@@ -36,7 +38,8 @@ typedef struct {
 } RadarInfo;
 
 
-void parse_radar_response(const char *input, RadarInfo *info);
+void parseRadarData(const char *input,  RadarInfo *radarInfo);
+
 int calculate_angle(int x1, int y1, int x2, int y2); 
 
  
@@ -66,6 +69,14 @@ int fire(char *buffer, int ship_id, int angle);
  * @return 0 si OK, >0 code erreur.
  */
 int radar(char *buffer, int ship_id);
+
+void int_to_string(char *dest, int num);
+void string_concat(char *dest, const char *str1, int num1, const char *str2, int num2, const char *str3, int num3, const char *end);
+int string_to_int(const char *str);
+void parse_numbers(const char *token, int *values, int max_values);
+
+
+
  
 #endif
  

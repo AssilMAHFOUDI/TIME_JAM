@@ -10,7 +10,7 @@ MU_TEST(test_parse_radar_response_simple) {
     const char *input = "P 101 1000 2000 -1 0,S 0 3 1020 2020 0,B 500 500,S 0 2 100 2050 0";
     RadarInfo radar;
 
-    parse_radar_response(input, &radar);
+    parseRadarData(input, &radar);
 
     mu_assert_int_eq(1, radar.planet_count);
     mu_assert_int_eq(2, radar.ship_count);
@@ -35,8 +35,9 @@ MU_TEST(test_parse_radar_response_simple) {
 
 MU_TEST(test_move_toward_planet) {
     RadarInfo radar;
-    const char *input = "P 101 1000 1000 -1 0,S 0 2 500 500 0,B 0 0";
-    parse_radar_response(input, &radar);
+    // const char *input = "P 101 1000 1000 -1 0,S 0 2 500 500 0,B 0 0";
+    const char *input = "P 56672 13000 7000 -1 0,P 57321 9000 16000 -1 0,P 14123 7000 15000 -1 0,P 12558 11000 8000 -1 0,P 32241 17000 4000 -1 0,P 61987 11000 10000 -1 0,P 59165 3000 10000 -1 0,P 24933 8000 14000 -1 0,P 50385 17000 7000 -1 0,P 21619 4000 16000 -1 0,P 12390 4000 17000 -1 0,P 14136 10000 6000 -1 0,S 0 1 10000 0 0,S 0 2 11500 0 0,S 0 3 8500 0 0,S 0 4 13000 0 0,S 0 5 7000 0 0,S 0 6 14500 0 0,S 0 7 5500 0 0,S 0 8 16000 0 0,S 0 9 4000 0 0,B 10000 0";
+    parseRadarData(input, &radar);
 
     Ship ship = radar.ships[0];
     Planet planet = radar.planets[0];
@@ -50,6 +51,7 @@ MU_TEST(test_move_toward_planet) {
 
     char buffer[50];
     int code = move(buffer, ship.ship_id, angle_deg, 1000);
+    printf("Move command: %s", buffer);
     mu_assert_int_eq(0, code);
 }
 MU_TEST(test_move_valid) {
