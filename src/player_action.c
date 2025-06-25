@@ -241,7 +241,38 @@ void parse_radar_data(Radar *radar_instance, const char *buffer) {
 }
 void go_base(int ship_id, Radar *radar_instance, char *buffer)
 {
-    
+    int angle_b = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->base.abscissa, radar_instance->base.ordinate);
+                           // Générer la commande MOVE
+    move(buffer, ship_id, angle_b, 1000);
+    puts(buffer);
+    gets(buffer);
+}
+
+void go_planet(int ship_id, int planet_index, Radar *radar_instance, char *buffer)
+{
+    int angle = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->planets[planet_index].abscissa, radar_instance->planets[planet_index].ordinate);
+    move(buffer, ship_id, angle, 1000);
+    puts(buffer);
+    gets(buffer);
+
+}
+
+void reorder_planets(Radar *radar_instance)
+{
+    // Réorganiser les planètes en fonction de leur distance à la base
+    for (int i = 0; i < radar_instance->planet_count - 1; i++) {
+        for (int j = i + 1; j < radar_instance->planet_count; j++) {
+            int dist_i = (radar_instance->planets[i].abscissa - radar_instance->base.abscissa) * (radar_instance->planets[i].abscissa - radar_instance->base.abscissa) +
+                         (radar_instance->planets[i].ordinate - radar_instance->base.ordinate) * (radar_instance->planets[i].ordinate - radar_instance->base.ordinate);
+            int dist_j = (radar_instance->planets[j].abscissa - radar_instance->base.abscissa) * (radar_instance->planets[j].abscissa - radar_instance->base.abscissa) +
+                         (radar_instance->planets[j].ordinate - radar_instance->base.ordinate) * (radar_instance->planets[j].ordinate - radar_instance->base.ordinate);
+            if (dist_i > dist_j) {
+                Planet temp = radar_instance->planets[i];
+                radar_instance->planets[i] = radar_instance->planets[j];
+                radar_instance->planets[j] = temp;
+            }
+        }
+    }
 }
 
 
@@ -253,58 +284,3 @@ void go_base(int ship_id, Radar *radar_instance, char *buffer)
 
 
 
-
-
-
-
-// // Custom string to integer conversion
-// static int str_to_int(const char* str) {
-//     int result = 0;
-//     int sign = 1;
-//     if (*str == '-') {
-//         sign = -1;
-//         str++;
-//     }
-//     while (*str >= '0' && *str <= '9') {
-//         result = result * 10 + (*str - '0');
-//         str++;
-//     }
-//     return sign * result;
-// }
- 
-
-
-// int navigate_to(char* buffer, const RadarInfo* radar, int ship_id, int target_x, int target_y) {
-//     // Find ship position
-//     for (int i = 0; i < radar->ship_count; i++) {
-//         if (radar->ships[i].ship_id == ship_id && radar->ships[i].team == 0) {
-//             int angle = calculate_angle(
-//                 radar->ships[i].x, radar->ships[i].y,
-//                 target_x, target_y
-//             );
-//             return move_command(buffer, ship_id, angle, 2000);  // Default speed
-//         }
-//     }
-//     return 1;  // Ship not found
-// }
-
-// // Custom function to extract next field (returns length, stores field in buffer)
-// static int get_next_field(char* str, int* pos, char* field, char delimiter) {
-//     int i = 0;
-//     while (str[*pos] == ' ') (*pos)++; // Skip spaces
-//     while (str[*pos] != delimiter && str[*pos] != '\0' && i < MAX_FIELD_SIZE - 1) {
-//         field[i++] = str[*pos]++;
-//     }
-//     field[i] = '\0';
-//     if (str[*pos] == delimiter) (*pos)++;
-//     return i;
-// }
-
-// // Function to parse radar data
-// int parse_radar_data(char* radar_string, RadarData* result) {
-
-//     move(radar_string, 8, 40, 1000); // Example move command for testing
-
-//     return 1 ;
-
-// }
