@@ -51,7 +51,7 @@ MU_TEST(test_move_toward_planet) {
 
     char buffer[50];
     int code = move(buffer, ship.ship_id, angle_deg, 1000);
-    printf("Move command: %s", buffer);
+    // printf("Move command: %s", buffer);
     mu_assert_int_eq(0, code);
 }
 MU_TEST(test_move_valid) {
