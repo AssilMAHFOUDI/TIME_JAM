@@ -239,6 +239,10 @@ void parse_radar_data(Radar *radar_instance, const char *buffer) {
         current_line = comma + 1;
     }
 }
+void go_base(int ship_id, Radar *radar_instance, char *buffer)
+{
+    
+}
 
 
 

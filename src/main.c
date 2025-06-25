@@ -116,6 +116,18 @@ void StartDefaultTask(void *argument)
     }
     for(int ship_index=8;ship_index<10;ship_index++)
     {
+
+
+        if((radar_instance.ships[ship_index-1].broken==1))
+        {
+           huit_neuf[ship_index-8]==99; 
+           int angle_b = calculate_angle(radar_instance.ships[ship_index-1].abscissa, radar_instance.ships[ship_index-1].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+                // Générer la commande MOVE
+                move(buffer, ship_index, angle_b, 1000);
+                puts(buffer);
+                gets(buffer);
+              continue; // Si le vaisseau est cassé, on passe au suivant
+        }
         if(huit_neuf[ship_index-8]==0) // Si la planète associée au vaisseau 8 ou 9 n'a pas été trouvée
         {
             for(int planet_index = 0; planet_index < radar_instance.planet_count; planet_index++) {

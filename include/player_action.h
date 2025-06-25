@@ -102,6 +102,7 @@ void string_concat(char *dest, const char *str1, int num1, const char *str2, int
 int string_to_int(const char *str);
 void parse_numbers(const char *token, int *values, int max_values);
 void parse_radar_data(Radar *radar_instance, const char *buffer);
+void go_base(int ship_id, Radar *radar_instance, char *buffer);
 
 
 
