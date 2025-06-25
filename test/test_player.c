@@ -8,25 +8,25 @@
 
 MU_TEST(test_parse_radar_response_simple) {
     const char *input = "P 101 1000 2000 -1 0,S 0 3 1020 2020 0,B 500 500,S 0 2 100 2050 0";
-    RadarInfo radar;
+    Radar radar;
 
-    parseRadarData(input, &radar);
+    parse_radar_data(&radar,input);
 
     mu_assert_int_eq(1, radar.planet_count);
     mu_assert_int_eq(2, radar.ship_count);
-    mu_assert_int_eq(500, radar.base.x);
-    mu_assert_int_eq(500, radar.base.y);
+    mu_assert_int_eq(500, radar.base.abscissa);
+    mu_assert_int_eq(500, radar.base.ordinate);
 
     mu_assert_int_eq(101, radar.planets[0].planet_id);
-    mu_assert_int_eq(1000, radar.planets[0].x);
-    mu_assert_int_eq(2000, radar.planets[0].y);
-    mu_assert_int_eq(-1, radar.planets[0].collected_by);
-    mu_assert_int_eq(0, radar.planets[0].at_base);
+    mu_assert_int_eq(1000, radar.planets[0].abscissa);
+    mu_assert_int_eq(2000, radar.planets[0].ordinate);
+    mu_assert_int_eq(-1, radar.planets[0].ship_id);
+    mu_assert_int_eq(0, radar.planets[0].saved);
 
     mu_assert_int_eq(0, radar.ships[0].team);
     mu_assert_int_eq(3, radar.ships[0].ship_id);
-    mu_assert_int_eq(1020, radar.ships[0].x);
-    mu_assert_int_eq(2020, radar.ships[0].y);
+    mu_assert_int_eq(1020, radar.ships[0].abscissa);
+    mu_assert_int_eq(2020, radar.ships[0].ordinate);
     mu_assert_int_eq(0, radar.ships[0].broken);
 
     mu_assert_int_eq(2, radar.ships[1].ship_id);
@@ -34,16 +34,16 @@ MU_TEST(test_parse_radar_response_simple) {
 }
 
 MU_TEST(test_move_toward_planet) {
-    RadarInfo radar;
+    Radar radar;
     // const char *input = "P 101 1000 1000 -1 0,S 0 2 500 500 0,B 0 0";
     const char *input = "P 56672 13000 7000 -1 0,P 57321 9000 16000 -1 0,P 14123 7000 15000 -1 0,P 12558 11000 8000 -1 0,P 32241 17000 4000 -1 0,P 61987 11000 10000 -1 0,P 59165 3000 10000 -1 0,P 24933 8000 14000 -1 0,P 50385 17000 7000 -1 0,P 21619 4000 16000 -1 0,P 12390 4000 17000 -1 0,P 14136 10000 6000 -1 0,S 0 1 10000 0 0,S 0 2 11500 0 0,S 0 3 8500 0 0,S 0 4 13000 0 0,S 0 5 7000 0 0,S 0 6 14500 0 0,S 0 7 5500 0 0,S 0 8 16000 0 0,S 0 9 4000 0 0,B 10000 0";
-    parseRadarData(input, &radar);
+    parse_radar_data(&radar,input);
 
     Ship ship = radar.ships[0];
     Planet planet = radar.planets[0];
 
-    int dx = planet.x - ship.x;
-    int dy = planet.y - ship.y;
+    int dx = planet.abscissa - ship.abscissa;
+    int dy = planet.ordinate - ship.ordinate;
 
     double angle_rad = atan2(dy, dx);
     int angle_deg = (int)(angle_rad * 180.0 / M_PI);

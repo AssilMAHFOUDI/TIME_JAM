@@ -6,7 +6,9 @@
 #define M_PI (3.14159265358979323846)
 #endif
 
-// Custom function to convert integer to string
+
+
+// // Custom function to convert integer to string
 void int_to_string(char *dest, int num) {
     if (num == 0) {
         dest[0] = '0';
@@ -72,48 +74,51 @@ void string_concat(char *dest, const char *str1, int num1, const char *str2, int
     dest[i] = '\0';
 }
 
-// Custom function to convert string to integer
-int string_to_int(const char *str) {
-    int result = 0;
-    int sign = 1;
-    int i = 0;
-    if (str[0] == '-') {
-        sign = -1;
-        i++;
-    }
-    while (str[i] >= '0' && str[i] <= '9') {
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
-    return sign * result;
-}
+// // Custom function to convert string to integer
+// int string_to_int(const char *str) {
+//     int result = 0;
+//     int sign = 1;
+//     int i = 0;
+//     if (str[0] == '-') {
+//         sign = -1;
+//         i++;
+//     }
+//     while (str[i] >= '0' && str[i] <= '9') {
+//         result = result * 10 + (str[i] - '0');
+//         i++;
+//     }
+//     return sign * result;
+// }
 
-// Custom function to parse space-separated numbers
-void parse_numbers(const char *token, int *values, int max_values) {
-    int count = 0;
-    int i = 0, start = 0;
-    char num_str[12];
-    while (token[i] && count < max_values) {
-        if (token[i] == ' ' || token[i] == '\0') {
-            if (i > start) {
-                int j;
-                for (j = 0; j < i - start; j++) num_str[j] = token[start + j];
-                num_str[j] = '\0';
-                values[count++] = string_to_int(num_str);
-                start = i + 1;
-            }
-        }
-        if (token[i] == '\0') break;
-        i++;
-    }
-    // Handle last number if no trailing space
-    if (i > start && count < max_values) {
-        int j;
-        for (j = 0; j < i - start; j++) num_str[j] = token[start + j];
-        num_str[j] = '\0';
-        values[count++] = string_to_int(num_str);
-    }
-}
+// // Custom function to parse space-separated numbers
+// void parse_numbers(const char *token, int *values, int max_values) {
+//     int count = 0;
+//     int i = 0, start = 0;
+//     char num_str[12];
+//     while (token[i] && count < max_values) {
+//         if (token[i] == ' ' || token[i] == '\0') {
+//             if (i > start) {
+//                 int j;
+//                 for (j = 0; j < i - start; j++) num_str[j] = token[start + j];
+//                 num_str[j] = '\0';
+//                 values[count++] = string_to_int(num_str);
+//                 start = i + 1;
+//             }
+//         }
+//         if (token[i] == '\0') break;
+//         i++;
+//     }
+//     // Handle last number if no trailing space
+//     if (i > start && count < max_values) {
+//         int j;
+//         for (j = 0; j < i - start; j++) num_str[j] = token[start + j];
+//         num_str[j] = '\0';
+//         values[count++] = string_to_int(num_str);
+//     }
+// }
+
+
+
 
 int move(char *buffer, int number_ship, int angle, int speed) {
     if (number_ship < 1 || number_ship > 9)
@@ -144,58 +149,158 @@ int radar(char *buffer, int ship_id) {
     string_concat(buffer, "RADAR ", ship_id, "\n", -1, "", -1, "");
     return 0;
 }
+// Calculate angle between two points (uses math.h but no stdio.h)
+int calculate_angle(int x1, int y1, int x2, int y2) {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double rad = atan2(dy, dx);
+    int deg = (int)(rad * 180.0 / M_PI);
+    return (deg < 0) ? deg + 360 : deg;
+}
 
-void parseRadarData(const char *input, RadarInfo *radarInfo) {
-    char *input_copy = strdup(input); // Duplicate input to avoid modifying the original
-    int planet_index = 0;
-    int ship_index = 0;
-    char *token;
+void parse_radar_data(Radar *radar_instance, const char *buffer) {
+    radar_instance->planet_count = 0;
+    radar_instance->ship_count = 0;
+    
+    // Parser les données
+    const char *current_line = buffer;
+    while (current_line[0] != '\0') {
+        if (current_line[0] == 'P') {
+            // Parser une planète
+            radar_instance->planets[radar_instance->planet_count].type = current_line[0];
+            const char *current = current_line;
 
-    // Tokenize the input string by commas
-    token = strtok(input_copy, ",");
-    while (token != NULL) {
-        char type = token[0]; // First character indicates the type
-        int values[5];
+            char *space1 = strchr(current, ' ');
+            current = space1 + 1;
+            radar_instance->planets[radar_instance->planet_count].planet_id = atoi(current);
 
-        if (type == 'P' && planet_index < MAX_PLANETS) {
-            // Parse planet data (format: "P id x y collected_by at_base")
-            parse_numbers(token + 2, values, 5); // Skip "P "
-            radarInfo->planets[planet_index].planet_id = values[0];
-            radarInfo->planets[planet_index].x = values[1];
-            radarInfo->planets[planet_index].y = values[2];
-            radarInfo->planets[planet_index].collected_by = values[3];
-            radarInfo->planets[planet_index].at_base = values[4];
-            planet_index++;
-        } else if (type == 'S' && ship_index < MAX_SHIPS) {
-            // Parse ship data (format: "S team ship_id x y broken")
-            parse_numbers(token + 2, values, 5); // Skip "S "
-            radarInfo->ships[ship_index].team = values[0];
-            radarInfo->ships[ship_index].ship_id = values[1];
-            radarInfo->ships[ship_index].x = values[2];
-            radarInfo->ships[ship_index].y = values[3];
-            radarInfo->ships[ship_index].broken = values[4];
-            ship_index++;
-        } else if (type == 'B') {
-            // Parse base station data (format: "B x y")
-            parse_numbers(token + 2, values, 2); // Skip "B "
-            radarInfo->base.x = values[0];
-            radarInfo->base.y = values[1];
+            char *space2 = strchr(current, ' ');
+            current = space2 + 1;
+            radar_instance->planets[radar_instance->planet_count].abscissa = atoi(current);
+
+            char *space3 = strchr(current, ' ');
+            current = space3 + 1;
+            radar_instance->planets[radar_instance->planet_count].ordinate = atoi(current);
+
+            char *space4 = strchr(current, ' ');
+            current = space4 + 1;
+            radar_instance->planets[radar_instance->planet_count].ship_id = atoi(current);
+
+            char *space5 = strchr(current, ' ');
+            current = space5 + 1;
+            radar_instance->planets[radar_instance->planet_count].saved = atoi(current);
+
+            radar_instance->planet_count++;
+        }
+        else if (current_line[0] == 'S') {
+            // Parser un vaisseau
+            radar_instance->ships[radar_instance->ship_count].type = current_line[0];
+            const char *current = current_line;
+
+            char *space1 = strchr(current, ' ');
+            current = space1 + 1;
+            radar_instance->ships[radar_instance->ship_count].team = atoi(current);
+
+            char *space2 = strchr(current, ' ');
+            current = space2 + 1;
+            radar_instance->ships[radar_instance->ship_count].ship_id = atoi(current);
+
+            char *space3 = strchr(current, ' ');
+            current = space3 + 1;
+            radar_instance->ships[radar_instance->ship_count].abscissa = atoi(current);
+
+            char *space4 = strchr(current, ' ');
+            current = space4 + 1;
+            radar_instance->ships[radar_instance->ship_count].ordinate = atoi(current);
+
+            char *space5 = strchr(current, ' ');
+            current = space5 + 1;
+            radar_instance->ships[radar_instance->ship_count].broken = atoi(current);
+
+            radar_instance->ship_count++;
+        }
+        else if (current_line[0] == 'B') {
+            // Parser la base
+            radar_instance->base.type = current_line[0];
+            const char *current = current_line;
+
+            char *space1 = strchr(current, ' ');
+            current = space1 + 1;
+            radar_instance->base.abscissa = atoi(current);
+
+            char *space2 = strchr(current, ' ');
+            current = space2 + 1;
+            radar_instance->base.ordinate = atoi(current);
         }
 
-        token = strtok(NULL, ","); // Get the next token
+        // Passer à la ligne suivante
+        char *comma = strchr(current_line, ',');
+        if (comma == NULL) break;
+        current_line = comma + 1;
     }
-
-    radarInfo->planet_count = planet_index;
-    radarInfo->ship_count = ship_index;
-
-    free(input_copy); // Free the duplicated string
 }
 
-int calculate_angle(int x1, int y1, int x2, int y2) {
-    double angle_rad = atan2(y2 - y1, x2 - x1);
-    int angle_deg = (int)(angle_rad * 180 / M_PI);
-    if (angle_deg < 0)
-        angle_deg += 360;
-    return angle_deg;
-}
 
+
+
+
+
+
+
+
+
+
+
+
+
+// // Custom string to integer conversion
+// static int str_to_int(const char* str) {
+//     int result = 0;
+//     int sign = 1;
+//     if (*str == '-') {
+//         sign = -1;
+//         str++;
+//     }
+//     while (*str >= '0' && *str <= '9') {
+//         result = result * 10 + (*str - '0');
+//         str++;
+//     }
+//     return sign * result;
+// }
+ 
+
+
+// int navigate_to(char* buffer, const RadarInfo* radar, int ship_id, int target_x, int target_y) {
+//     // Find ship position
+//     for (int i = 0; i < radar->ship_count; i++) {
+//         if (radar->ships[i].ship_id == ship_id && radar->ships[i].team == 0) {
+//             int angle = calculate_angle(
+//                 radar->ships[i].x, radar->ships[i].y,
+//                 target_x, target_y
+//             );
+//             return move_command(buffer, ship_id, angle, 2000);  // Default speed
+//         }
+//     }
+//     return 1;  // Ship not found
+// }
+
+// // Custom function to extract next field (returns length, stores field in buffer)
+// static int get_next_field(char* str, int* pos, char* field, char delimiter) {
+//     int i = 0;
+//     while (str[*pos] == ' ') (*pos)++; // Skip spaces
+//     while (str[*pos] != delimiter && str[*pos] != '\0' && i < MAX_FIELD_SIZE - 1) {
+//         field[i++] = str[*pos]++;
+//     }
+//     field[i] = '\0';
+//     if (str[*pos] == delimiter) (*pos)++;
+//     return i;
+// }
+
+// // Function to parse radar data
+// int parse_radar_data(char* radar_string, RadarData* result) {
+
+//     move(radar_string, 8, 40, 1000); // Example move command for testing
+
+//     return 1 ;
+
+// }
