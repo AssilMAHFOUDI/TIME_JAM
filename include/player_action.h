@@ -103,6 +103,8 @@ int string_to_int(const char *str);
 void parse_numbers(const char *token, int *values, int max_values);
 void parse_radar_data(Radar *radar_instance, const char *buffer);
 void go_base(int ship_id, Radar *radar_instance, char *buffer);
+void go_planet(int ship_id, int planet_index, Radar *radar_instance, char *buffer);
+void reorder_planets(Radar *radar_instance);
 
 
 
