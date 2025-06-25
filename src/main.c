@@ -85,83 +85,132 @@ void StartDefaultTask(void *argument)
     int neuf=0;
     int huit_vasy=40;
 
+    int huit_neuf[2]= {0, 0}; // Pour stocker les indices des planètes associées aux vaisseaux 8 et 9
+
     parse_radar_data(&radar_instance, buffer);
-    for(int i = 0; i < radar_instance.planet_count; i++) {
-        
 
-        if((radar_instance.planets[i].ship_id!=-1)&&(radar_instance.planets[i].saved!=1))
-        {
-            if(radar_instance.planets[i].ship_id==8)
-            {
-                huit=1;
-            }
-            else if(radar_instance.planets[i].ship_id==9)
-            {
-                neuf=1;
-            }
-            int this_ship_id = radar_instance.planets[i].ship_id;
-            int angle_b = calculate_angle(radar_instance.ships[this_ship_id-1].abscissa, radar_instance.ships[this_ship_id-1].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
-            move(buffer, this_ship_id, angle_b, 1000);
-            puts(buffer);
-            gets(buffer);
-            
-            if((huit+neuf)==2)
-            {
-                continue;
-            }
-
-            // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
-            // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
-        }
-        
-    }
-    if (huit==0)
+    for(int ship_index=8;ship_index<10;ship_index++)
     {
-        for(int i = 0; i < radar_instance.planet_count; i++) {
-        
-
-        if((radar_instance.planets[i].ship_id==-1)&&(radar_instance.planets[i].saved==0))
+        if((radar_instance.ships[ship_index-1].broken==1))
         {
-            // int this_ship_id = radar_instance.planets[i].ship_id;
-            // int angle_b = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
-            int angle = calculate_angle(radar_instance.ships[(8-1)].abscissa, radar_instance.ships[(8-1)].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
-            move(buffer, 8, angle, 1000);
-            puts(buffer);
-            gets(buffer);
-            huit_vasy=i;
-            break;
-
-            // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
-            // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
+           huit_neuf[ship_index-8]==99; 
+           int angle_b = calculate_angle(radar_instance.ships[ship_index-1].abscissa, radar_instance.ships[ship_index-1].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+                // Générer la commande MOVE
+                move(buffer, ship_index, angle_b, 1000);
+                puts(buffer);
+                gets(buffer);
+              continue; // Si le vaisseau est cassé, on passe au suivant
         }
-        
-    }
-    }
 
-    if (neuf==0)
+       for(int planet_index = 0; planet_index < radar_instance.planet_count; planet_index++) {
+            if ((radar_instance.planets[planet_index].ship_id == ship_index)&&(radar_instance.planets[planet_index].saved!=1)) {
+                huit_neuf[ship_index-8] = 1;
+                // Calculer l'angle entre le vaisseau et la planète
+                int angle_b = calculate_angle(radar_instance.ships[ship_index-1].abscissa, radar_instance.ships[ship_index-1].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+                // Générer la commande MOVE
+                move(buffer, ship_index, angle_b, 1000);
+                puts(buffer);
+                gets(buffer);
+            }
+        }
+    }
+    for(int ship_index=8;ship_index<10;ship_index++)
     {
-        for(int i = huit_vasy+1; i < radar_instance.planet_count; i++) {
-
-        if((radar_instance.planets[i].ship_id==-1)&&(radar_instance.planets[i].saved==0))
+        if(huit_neuf[ship_index-8]==0) // Si la planète associée au vaisseau 8 ou 9 n'a pas été trouvée
         {
-            // int this_ship_id = radar_instance.planets[i].ship_id;
-            // int angle_b = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
-            int angle = calculate_angle(radar_instance.ships[(9-1)].abscissa, radar_instance.ships[(9-1)].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
-            move(buffer, 9, angle, 1000);
-            puts(buffer);
-            gets(buffer);
+            for(int planet_index = 0; planet_index < radar_instance.planet_count; planet_index++) {
+                if ((radar_instance.planets[planet_index].ship_id == -1)&&(radar_instance.planets[planet_index].saved==0)) {
+                    // Calculer l'angle entre le vaisseau et la planète
+                    int angle = calculate_angle(radar_instance.ships[ship_index-1].abscissa, radar_instance.ships[ship_index-1].ordinate, radar_instance.planets[planet_index].abscissa, radar_instance.planets[planet_index].ordinate);
+                    // Générer la commande MOVE
+                    move(buffer, ship_index, angle, 1000);
+                    puts(buffer);
+                    gets(buffer);
+                    huit_neuf[ship_index-8] = planet_index; // Marquer la planète associée au vaisseau 8 ou 9 comme trouvée
+
+                    break; // Sortir de la boucle une fois que le vaisseau a été déplacé vers une planète
+                }
+            }
+        }
+    }
 
 
-            break; 
+    // for(int i = 0; i < radar_instance.planet_count; i++) {
+        
+
+    //     if((radar_instance.planets[i].ship_id!=-1)&&(radar_instance.planets[i].saved!=1))
+    //     {
+    //         if(radar_instance.planets[i].ship_id==8)
+    //         {
+    //             huit=1;
+    //         }
+    //         else if(radar_instance.planets[i].ship_id==9)
+    //         {
+    //             neuf=1;
+    //         }
+    //         int this_ship_id = radar_instance.planets[i].ship_id;
+    //         int angle_b = calculate_angle(radar_instance.ships[this_ship_id-1].abscissa, radar_instance.ships[this_ship_id-1].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+    //         move(buffer, this_ship_id, angle_b, 1000);
+    //         puts(buffer);
+    //         gets(buffer);
+            
+    //         if((huit+neuf)==2)
+    //         {
+    //             continue;
+    //         }
+
+    //         // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
+    //         // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
+    //     }
+        
+    // }
+    // if (huit==0)
+    // {
+    //     for(int i = 0; i < radar_instance.planet_count; i++) {
+        
+
+    //     if((radar_instance.planets[i].ship_id==-1)&&(radar_instance.planets[i].saved==0))
+    //     {
+    //         // int this_ship_id = radar_instance.planets[i].ship_id;
+    //         // int angle_b = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+    //         int angle = calculate_angle(radar_instance.ships[(8-1)].abscissa, radar_instance.ships[(8-1)].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
+    //         move(buffer, 8, angle, 1000);
+    //         puts(buffer);
+    //         gets(buffer);
+    //         huit_vasy=i;
+    //         break;
+
+    //         // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
+    //         // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
+    //     }
+        
+    // }
+    // }
+
+    // if (neuf==0)
+    // {
+    //     for(int i = huit_vasy+1; i < radar_instance.planet_count; i++) {
+
+    //     if((radar_instance.planets[i].ship_id==-1)&&(radar_instance.planets[i].saved==0))
+    //     {
+    //         // int this_ship_id = radar_instance.planets[i].ship_id;
+    //         // int angle_b = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.base.abscissa, radar_instance.base.ordinate);
+    //         int angle = calculate_angle(radar_instance.ships[(9-1)].abscissa, radar_instance.ships[(9-1)].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
+    //         move(buffer, 9, angle, 1000);
+    //         puts(buffer);
+    //         gets(buffer);
+
+
+    //         break; 
 
             
 
-            // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
-            // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
-        }
+    //         // int angle = calculate_angle(radar_instance.ships[this_ship_id].abscissa, radar_instance.ships[this_ship_id].ordinate, radar_instance.planets[i].abscissa, radar_instance.planets[i].ordinate);
+    //         // int angle=calculate_angle(radar_instance.ships[8].abscissa,radar_instance.ships[8].ordinate,radar_instance.planets[0].abscissa, radar_instance.planets[0].ordinate);
+    //     }
         
-    }
-    }
+    // }
+    // }
 
 
 
