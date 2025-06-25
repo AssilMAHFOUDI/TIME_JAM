@@ -239,23 +239,23 @@ void parse_radar_data(Radar *radar_instance, const char *buffer) {
         current_line = comma + 1;
     }
 }
-void go_base(int ship_id, Radar *radar_instance, char *buffer)
-{
-    int angle_b = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->base.abscissa, radar_instance->base.ordinate);
-                           // Générer la commande MOVE
-    move(buffer, ship_id, angle_b, 1000);
-    puts(buffer);
-    gets(buffer);
-}
+// void go_base(int ship_id, Radar *radar_instance, char *buffer)
+// {
+//     int angle_b = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->base.abscissa, radar_instance->base.ordinate);
+//                            // Générer la commande MOVE
+//     move(buffer, ship_id, angle_b, 1000);
+//     puts(buffer);
+//     gets(buffer);
+// }
 
-void go_planet(int ship_id, int planet_index, Radar *radar_instance, char *buffer)
-{
-    int angle = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->planets[planet_index].abscissa, radar_instance->planets[planet_index].ordinate);
-    move(buffer, ship_id, angle, 1000);
-    puts(buffer);
-    gets(buffer);
+// void go_planet(int ship_id, int planet_index, Radar *radar_instance, char *buffer)
+// {
+//     int angle = calculate_angle(radar_instance->ships[ship_id-1].abscissa, radar_instance->ships[ship_id-1].ordinate, radar_instance->planets[planet_index].abscissa, radar_instance->planets[planet_index].ordinate);
+//     move(buffer, ship_id, angle, 1000);
+//     puts(buffer);
+//     gets(buffer);
 
-}
+// }
 
 void reorder_planets(Radar *radar_instance)
 {
