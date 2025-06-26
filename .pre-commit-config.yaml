@@ -3,7 +3,21 @@ repos:
     hooks:
       - id: run-unit-tests
         name: Run MinUnit tests
-        entry: sh -c "gcc -o test_math_ops math_ops.c test_math_ops.c && ./test_math_ops"
+        entry: sh -c 'gcc -I. -Iinclude -lm ./test/test_player.c ./src/player_action.c -o /tmp/test_player_now -lm && /tmp/test_player_now'
         language: system
-        files: \.(c|h)$
+        stages: [pre-commit]
+
+      - id: cppcheck
+        name: Run cppcheck static analysis
+        entry: cppcheck
+        args: [--enable=all, --inconclusive, --std=c++11]
+        language: system
+        types: [c]
+        stages: [pre-commit]
+
+      - id: run-coverage
+        name: Run Coverage with GCC
+        entry: sh -c 'gcc -Iinclude -lm -fprofile-arcs -ftest-coverage -o /tmp/test_coverage ./test/*.c ./src/player_action.c -lm && /tmp/test_coverage && mkdir -p cov_html && gcovr -r . --exclude test/test_player.c --exclude test/minunit.h --html --html-details -o cov_html/index.html'
+        language: system
+        files: ^test/.*\.c$
         stages: [pre-commit]
