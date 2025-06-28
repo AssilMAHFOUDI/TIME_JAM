@@ -1,6 +1,9 @@
 # TIME_JAM adaptation du projet Space Collector
 Équipe du projet
-Nom de l'équipe : TIME_JAMMembres :  
+Nom de l'équipe : TIME_JAM
+
+
+Membres :  
 
 MAHFOUDI Assil  
 GADEBILLE Baptiste  
